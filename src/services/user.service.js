@@ -1,6 +1,8 @@
 import {
-  createUser,
+  createUser,getUserPresence
 } from "../repositories/user.repository.js";
+
+import onlineUsers from "../socket/onlineUsers.js";
 
 export const createUserService = async (
   name,
@@ -18,4 +20,19 @@ export const createUserService = async (
   );
 
   return user;
+};
+
+export const getPresenceService =
+async (userId) => {
+
+  const user =
+    await getUserPresence(
+      userId
+    );
+
+  return {
+    ...user,
+    isOnline:
+      onlineUsers.has(userId)
+  };
 };

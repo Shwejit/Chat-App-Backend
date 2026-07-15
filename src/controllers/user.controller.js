@@ -1,5 +1,10 @@
 import { getAllUsers, getUserById } from "../repositories/user.repository.js";
-import { createUserService } from "../services/user.service.js";
+import {
+  createUserService,
+  getPresenceService,
+} from "../services/user.service.js";
+
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -46,38 +51,28 @@ export const getUser = async (req, res) => {
   }
 };
 
-export const createUser = async (
-  req,
-  res
-) => {
+export const createUser = async (req, res) => {
   try {
+    const { name, email, password } = req.body;
 
-    const {
-      name,
-      email,
-      password,
-    } = req.body;
-
-    const user =
-      await createUserService(
-        name,
-        email,
-        password
-      );
+    const user = await createUserService(name, email, password);
 
     res.status(201).json({
       success: true,
       data: user,
     });
-
   } catch (error) {
-
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message:
-        "Internal Server Error",
+      message: "Internal Server Error",
     });
   }
 };
+
+export const getPresence = asyncHandler(async (req, res) => {
+  const user = await getPresenceService(req.params.userId);
+
+  res.json(user);
+});

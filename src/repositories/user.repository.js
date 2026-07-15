@@ -51,3 +51,38 @@ export const getUserById = async (userId) => {
 
   return result.rows[0];
 };
+
+export const updateLastSeen =
+async (userId) => {
+
+  const query = `
+    UPDATE users
+    SET last_seen = NOW()
+    WHERE id = $1
+  `;
+
+  await pool.query(
+    query,
+    [userId]
+  );
+};
+export const getUserPresence =
+async (userId) => {
+
+  const query = `
+    SELECT
+      id,
+      name,
+      last_seen
+    FROM users
+    WHERE id = $1
+  `;
+
+  const result =
+    await pool.query(
+      query,
+      [userId]
+    );
+
+  return result.rows[0];
+};
